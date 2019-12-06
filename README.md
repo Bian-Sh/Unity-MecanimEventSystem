@@ -50,6 +50,10 @@ OnCompleted|在动画片段结束帧执行的回调
             //Do something when finished            
           });
 ```
+# 注意事项
+因为对 AnimationClip 绑定事件的时候必须全面刷新 AnimationClip 数据，Animator也会刷新，所以使用本扩展绑定事件的动作必须放在所有的Animator操作之前。
+As I use ``Animator.Rebind()`` to binding event into a AnimationClip ,the Animator will refresh then，so any operarion about Animator must beyond MecanimEventSystem's API which register events.
+
 
 # 动画演示
 

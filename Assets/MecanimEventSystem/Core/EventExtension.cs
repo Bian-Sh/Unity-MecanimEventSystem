@@ -23,6 +23,26 @@ namespace zFrame.Event
             //获得需要处理的动画片段
             return new EventConfig_A(a_EventInfo);
         }
+        
+        /// <summary>
+        /// 指定需要绑定回调的AnimationClip
+        /// </summary>
+        /// <param name="animator">动画机</param>
+        /// <param name="clipName">动画片段</param>
+        /// <returns>事件配置器</returns>
+        public static EventConfig_A GetEventConfig(this Animator animator, string clipName)
+        {
+            EventInfo a_EventInfo = EventHandler.Instance.GenerAnimationInfo(animator, clipName);
+            if (null != a_EventInfo)
+            {
+                if (null == animator.GetComponent<CallbackListener>())
+                {
+                    animator.gameObject.AddComponent<CallbackListener>();
+                }
+            }
+            //获得需要处理的动画片段
+            return new EventConfig_A(a_EventInfo);
+        }
         /// <summary>
         /// 指定需要绑定回调的AnimationClip
         /// </summary>

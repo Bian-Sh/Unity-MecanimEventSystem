@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,14 +16,10 @@ namespace zFrame.Event
         /// <summary>动画片段的总帧数</summary>
         public int totalFrames;
         /// <summary>帧以及对应的回调链</summary>
-        public Dictionary<int, Action<AnimationEvent>> frameCallBackPairs;
-        /// <summary>帧以及对应的事件</summary>
-        public Dictionary<int, AnimationEvent> frameEventPairs;
-
+        public Dictionary<int, List<Action<AnimationEvent>>> frameCallBackPairs;
         public EventInfo(Animator anim, AnimationClip clip)
         {
-            frameCallBackPairs = new Dictionary<int, Action<AnimationEvent>>();
-            frameEventPairs = new Dictionary<int, AnimationEvent>();
+            frameCallBackPairs = new();
             animator = anim;
             animationClip = clip;
             //经验表明需要 向下取整 以获取当前的帧数
@@ -34,9 +29,8 @@ namespace zFrame.Event
         /// <summary>清除数据</summary>
         public void Clear()
         {
-            animationClip.events = default(AnimationEvent[]);
-            frameCallBackPairs = new Dictionary<int, Action<AnimationEvent>>();
-            frameEventPairs = new Dictionary<int, AnimationEvent>();
+            animationClip.events = default;
+            frameCallBackPairs = new();
             animationClip = null;
             animator = null;
         }

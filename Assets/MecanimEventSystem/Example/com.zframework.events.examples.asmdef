@@ -1,0 +1,16 @@
+{
+    "name": "com.zframework.events.examples",
+    "rootNamespace": "",
+    "references": [
+        "GUID:01620f7c539b3ee4d87938384cdaccec"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

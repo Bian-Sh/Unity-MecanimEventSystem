@@ -153,7 +153,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -205,6 +204,7 @@ GameObject:
   - component: {fileID: 230172598}
   - component: {fileID: 230172597}
   - component: {fileID: 230172602}
+  - component: {fileID: 230172603}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -324,6 +324,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 230172597}
   button: {fileID: 579102279}
+--- !u!114 &230172603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 230172596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1703af9c2d635a44a85cfc43771212ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &395516723
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,14 +14,14 @@ namespace zFrame.Event.Example
             if (!ifFire) return;
                 Debug.Log("55帧到了：" + clipname + ":" + v.time * v.animatorClipInfo.clip.frameRate + "搞事情！");
                 Debug.Log("55帧到了:参数：" + v.stringParameter + ":" + v.objectReferenceParameter.name);
-            }).SetParms("ddsf", objectParm: gameObject);
+            });
 
             animator.SetTarget("Left").OnStart((v) =>
             {
                 if (!ifFire) return;
                 string clipname = v.animatorClipInfo.clip.name;
                 Debug.Log("第一帧到了：" + clipname + ":" + v.time * v.animatorClipInfo.clip.frameRate + v.stringParameter);
-            }).SetParms("bian", 11);
+            });
         }
         private void OnGUI()
         {

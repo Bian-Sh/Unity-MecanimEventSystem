@@ -9,7 +9,7 @@ public enum Event
 
 public static class MESCustomAwaiter
 {
-    public static AnimationAwaiter SetBoolAsync(this EventConfig_A state, string paramName, bool value, Event type = Event.OnEnd)
+    public static AnimationAwaiter SetBoolAsync(this EventState state, string paramName, bool value, Event type = Event.OnEnd)
     {
         var awaiter = new AnimationAwaiter();
         switch (type)

@@ -1,58 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
+using static zFrame.Event.EventHandler;
 
 namespace zFrame.Event
-{ 
-    /// <summary>
-    /// 参数配置基类 
-    /// </summary>
-    public class BaseEventConfig
+{
+    /// <summary>Mecanim事件系统事件配置类_for start+completed callback </summary>
+    public class EventState
     {
         protected AnimationEvent _ClipEvent;
         protected int _keyFrame;
         protected EventInfo a_Event;
         protected Animator _animator;
-
-        public BaseEventConfig(EventInfo eventInfo, int frame)
+        /// <summary>
+        /// 为Clip添加Onstart回调事件
+        /// </summary>
+        /// <param name="onStart">回调</param>
+        /// <returns>参数配置器</returns>
+        public EventState OnStart(Action<AnimationEvent> onStart)
         {
-            _keyFrame = frame;
+            if (a_Event == null) return null;
+            ConfigEvent(0, onStart);
+            return this;
+        }
+        /// <summary>
+        /// 为Clip添加OnCompleted回调事件
+        /// </summary>
+        /// <param name="OnCompleted">回调</param>
+        /// <returns>参数配置器</returns>
+        public EventState OnCompleted(Action<AnimationEvent> onCompleted)
+        {
+            if (a_Event == null) return null;
+            ConfigEvent(a_Event.totalFrames, onCompleted);
+            return this;
+        }
+
+        public EventState OnProcess(Action<AnimationEvent> onProcess)
+        {
+            if (a_Event == null) return null;
+            ConfigEvent(_keyFrame, onProcess);
+            return this;
+        }
+
+        public EventState(EventInfo eventInfo, int frame = -1)
+        {
+            //如果用户不指定帧则默认是最后一帧
+            _keyFrame = frame == -1 ? eventInfo.totalFrames : frame; 
             a_Event = eventInfo;
             _animator = eventInfo.animator;
-        }
-
-        //-----因为使用了链式编程思想,动画机的回调事件拥有闭包特性,所有的参数都在上下文了，不建议配置任何参数---------
-        /// <summary>设置组合参数</summary>
-        /// <param name="intParm">int参数</param>
-        /// <param name="floatParm">float参数</param>
-        /// <param name="stringParm">string参数(必填)</param>
-        /// <param name="objectParm">Object参数</param>
-        /// <returns></returns>
-        public Animator SetParms(string stringParm, int intParm = default(int), float floatParm = default(float), UnityEngine.Object objectParm = default(UnityEngine.Object))
-        {
-            if (null == a_Event){ return _animator;}
-            AnimationEvent _ClipEvent;
-            a_Event.frameEventPairs.TryGetValue(_keyFrame, out _ClipEvent);
-            if (null == _ClipEvent){ return _animator; }
-            _ClipEvent.intParameter = intParm;
-            _ClipEvent.floatParameter = floatParm;
-            _ClipEvent.stringParameter = stringParm;
-            _ClipEvent.objectReferenceParameter = objectParm;
-            ResignEvent();
-            return a_Event.animator;
-        }
-
-        /// <summary>
-        /// 参数被变更，需要重新绑定所有的事件
-        /// </summary>
-        private void ResignEvent()
-        {
-            a_Event.animationClip.events = default(AnimationEvent[]); //被逼的，AnimationEvent不是简单的对象引用及其字段修改的问题，只能从新插入事件
-            foreach (AnimationEvent item in a_Event.frameEventPairs.Values)
-            {
-                a_Event.animationClip.AddEvent(item);
-            }
-            a_Event.animator.Rebind();
         }
 
         /// <summary>
@@ -64,33 +58,19 @@ namespace zFrame.Event
         {
             if (null == action) return;
             _keyFrame = frame;
-            if (!a_Event.frameCallBackPairs.ContainsKey(_keyFrame))
+            if (!a_Event.frameCallBackPairs.TryGetValue(_keyFrame, out var actions))
             {
-                a_Event.frameCallBackPairs.Add(_keyFrame, action);
+                actions = new();
+                a_Event.frameCallBackPairs[_keyFrame] = actions;
+            }
+            if (!actions.Contains(action))
+            {
+                actions.Add(action);
+                GenerateAnimationEvent(a_Event, _keyFrame);
             }
             else
             {
-                Action<AnimationEvent> t_action = a_Event.frameCallBackPairs[_keyFrame];
-                if (null == t_action)
-                {
-                    a_Event.frameCallBackPairs[_keyFrame] = action;
-                }
-                else
-                {
-                    Delegate[] delegates = t_action.GetInvocationList();
-                    if (Array.IndexOf(delegates, action) == -1)
-                    {
-                        a_Event.frameCallBackPairs[_keyFrame] += action;
-                    }
-                    else
-                    {
-                        Debug.LogWarningFormat("AnimatorEventSystem[一般]：指定AnimationClip【{0}】已经订阅了该事件【{1}】！\n 建议：请勿频繁订阅！", a_Event.animationClip.name,action.Method.Name);
-                    }
-                }
-            }
-            if (!a_Event.frameEventPairs.ContainsKey(_keyFrame))
-            {
-                EventHandler.Instance.GenerAnimationEvent(a_Event, _keyFrame);
+                Debug.LogWarning($"AnimatorEventSystem[一般]：指定AnimationClip【{a_Event.animationClip.name}】已经订阅了该事件【{action.Method.Name}】！\n 建议：请勿频繁订阅！");
             }
         }
 

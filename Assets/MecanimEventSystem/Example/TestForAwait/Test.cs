@@ -8,7 +8,10 @@ public class Test : MonoBehaviour
     public Animator animator;
     public Button button;
 
-    public Text text;
+    public Text text, text2;
+    public int delay = 5;
+    float countcached = 0;
+    private bool isCounting = false;
 
     EventState callbackExp, callbackClps;
 
@@ -17,32 +20,54 @@ public class Test : MonoBehaviour
     {
         button.onClick.AddListener(OnButtonClicked);
         text.text = "expand";
+    }
 
-        // 运行时为动画片段绑定事件, 提前绑定以避免Animator运行过程中被重新绑定
-        // 发现 ReBind 会导致第二个 settarget 延迟到最后，此为异常
-        // 解决方案是编辑器下提前安插事件
-       callbackExp = animator.SetTarget("Expand");
-        callbackClps = animator.SetTarget("Collapse");
+    private void Update()
+    {
+        if (isCounting)
+        {
+            countcached += Time.deltaTime;
+            text2.text = countcached.ToString("f0");
+        }
     }
 
     private async void OnButtonClicked()
     {
-        button.interactable = false;
-        Debug.Log($"{nameof(Test)}:  Default is  expand , Now start collapse！");
+        // 为 2 个动画片的绑定事件
+        {
+            // SetTarget 务必提前统一操作
+            // 原因是该操作会触发 Animator Rebind 并导致动画重置。
+            callbackExp = animator.SetTarget("Expand");
+            callbackClps = animator.SetTarget("Collapse");
+        }
 
-        await callbackClps.SetBoolAsync("Expand",false);
-        
-        Debug.Log($"{nameof(Test)}:  collapse Completed ！");
-        text.text = "collapsed";
-        
-        Debug.Log($"{nameof(Test)}:  wait for 5 second！");
-        await Task.Delay(5000);
-        Debug.Log($"{nameof(Test)}:  waiting finish！");
+        // 等待折叠
+        {
+            button.interactable = false;
+            Debug.Log($"{nameof(Test)}:  Default is  expand , Now start collapse！");
+            await callbackClps.SetBoolAsync("Expand", false);
+            Debug.Log($"{nameof(Test)}:  collapse Completed ！");
+            text.text = "collapsed";
+        }
 
-        Debug.Log($"{nameof(Test)}:  Now is collapse , expanding ！");
-        await callbackExp.SetBoolAsync("Expand", true); 
-        text.text = "expand";
-        Debug.Log($"{nameof(Test)}: expand Completed!");
-        button.interactable = true;
+        //做一个延迟
+        {
+            Debug.Log($"{nameof(Test)}:  wait for 5 second！");
+            isCounting = true;
+            await Task.Delay(delay * 1000);
+            isCounting = false;
+            countcached = 0;
+            text2.text = string.Empty;
+            Debug.Log($"{nameof(Test)}:  waiting finish！");
+        }
+
+        // 等待展开
+        {
+            Debug.Log($"{nameof(Test)}:  Now is collapse , expanding ！");
+            await callbackExp.SetBoolAsync("Expand", true);
+            text.text = "expand";
+            Debug.Log($"{nameof(Test)}: expand Completed!");
+            button.interactable = true;
+        }
     }
 }

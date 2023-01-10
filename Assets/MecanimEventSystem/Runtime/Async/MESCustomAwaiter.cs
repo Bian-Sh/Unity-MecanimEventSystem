@@ -3,26 +3,12 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
 using zFrame.Event;
-public enum Event
-{
-    OnStart,
-    OnEnd
-}
-
 public static class MESCustomAwaiter
 {
-    public static AnimationAwaiter SetBoolAsync(this EventState state, string paramName, bool value, Event type = Event.OnEnd)
+    public static AnimationAwaiter SetBoolAsync(this EventState state, string paramName, bool value)
     {
         var awaiter = new AnimationAwaiter();
-        switch (type)
-        {
-            case Event.OnStart:
-                state.OnStart(v=>awaiter.Complete());
-                break;
-            case Event.OnEnd:
-                state.OnCompleted(v=>awaiter.Complete());
-                break;
-        }
+        state.OnCompleted(v => awaiter.Complete());
         state.SetBool(paramName, value);
         return awaiter;
     }

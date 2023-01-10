@@ -11,17 +11,7 @@ namespace zFrame.Event
         protected int _keyFrame;
         protected EventInfo a_Event;
         protected Animator _animator;
-        /// <summary>
-        /// 为Clip添加Onstart回调事件
-        /// </summary>
-        /// <param name="onStart">回调</param>
-        /// <returns>参数配置器</returns>
-        public EventState OnStart(Action<AnimationEvent> onStart)
-        {
-            if (a_Event == null) return null;
-            ConfigEvent(0, onStart);
-            return this;
-        }
+
         /// <summary>
         /// 为Clip添加OnCompleted回调事件
         /// </summary>
@@ -44,9 +34,10 @@ namespace zFrame.Event
         public EventState(EventInfo eventInfo, int frame = -1)
         {
             //如果用户不指定帧则默认是最后一帧
-            _keyFrame = frame == -1 ? eventInfo.totalFrames : frame; 
+            _keyFrame = frame == -1 ? eventInfo.totalFrames : frame;
             a_Event = eventInfo;
             _animator = eventInfo.animator;
+            GenerateAnimationEvent(a_Event, _keyFrame); //将事件绑定稍作提前，方便统一声明，避免调用过程中的 Rebind 
         }
 
         /// <summary>
@@ -66,7 +57,6 @@ namespace zFrame.Event
             if (!actions.Contains(action))
             {
                 actions.Add(action);
-                GenerateAnimationEvent(a_Event, _keyFrame);
             }
             else
             {

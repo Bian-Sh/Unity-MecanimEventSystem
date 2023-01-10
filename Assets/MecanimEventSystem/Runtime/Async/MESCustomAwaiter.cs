@@ -1,5 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using UnityEngine;
 using zFrame.Event;
 public enum Event
 {
@@ -15,10 +17,10 @@ public static class MESCustomAwaiter
         switch (type)
         {
             case Event.OnStart:
-                state.OnStart(v => awaiter.Complete());
+                state.OnStart(v=>awaiter.Complete());
                 break;
             case Event.OnEnd:
-                state.OnCompleted(v => awaiter.Complete());
+                state.OnCompleted(v=>awaiter.Complete());
                 break;
         }
         state.SetBool(paramName, value);
@@ -28,13 +30,20 @@ public static class MESCustomAwaiter
 
 public class AnimationAwaiter : INotifyCompletion
 {
+    static SynchronizationContext synchronizContent;
+    static int id;
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    static void CaptureSynchronizationContext()
+    {
+        id = Thread.CurrentThread.ManagedThreadId;
+        synchronizContent = SynchronizationContext.Current;
+    }
+
     private bool _isDone;
     Action _continuation;
-
     public bool IsCompleted => _isDone;
     public void OnCompleted(Action continuation)
     {
-        _isDone = true;
         _continuation = continuation;
     }
 
@@ -43,7 +52,14 @@ public class AnimationAwaiter : INotifyCompletion
     public void Complete()
     {
         _isDone = true;
-        _continuation?.Invoke();
+        if (Thread.CurrentThread.ManagedThreadId == id)
+        {
+            _continuation?.Invoke();
+        }
+        else
+        {
+            synchronizContent.Post(v => _continuation?.Invoke(), null);
+        }
     }
 }
 

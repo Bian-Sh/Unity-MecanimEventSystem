@@ -136,7 +136,15 @@ namespace zFrame.Event
             EventInfo a_EventInfo = eventContainer.Find(v => v.animator == animator && v.animationClip == clip);
             if (null != a_EventInfo)
             {
-                a_EventInfo.frameCallBackPairs.TryGetValue(frame, out actions);
+                if (a_EventInfo.frameCallBackPairs.ContainsKey(frame))
+                {
+                    actions = new(a_EventInfo.frameCallBackPairs[frame]);
+                    a_EventInfo.frameCallBackPairs[frame] = new(); // just one shot
+                }
+                else
+                {
+                    Debug.LogWarning($"{nameof(EventHandler)}: Key [frame = {frame}] dose not exsit! \n {animator.name} - {clip.name}");
+                }
             }
             return actions;
         }

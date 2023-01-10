@@ -7,35 +7,42 @@ public class Test : MonoBehaviour
 {
     public Animator animator;
     public Button button;
-    
-    
+
+    public Text text;
+
+    EventState callbackExp, callbackClps;
+
+
     void Start()
     {
-        button.onClick.AddListener(OnButtonClicked);        
+        button.onClick.AddListener(OnButtonClicked);
+        text.text = "expand";
+
+        // è¿è¡Œæ—¶ä¸ºåŠ¨ç”»ç‰‡æ®µç»‘å®šäº‹ä»¶, æå‰ç»‘å®šä»¥é¿å…Animatorè¿è¡Œè¿‡ç¨‹ä¸­è¢«é‡æ–°ç»‘å®š
+        // å‘ç° ReBind ä¼šå¯¼è‡´ç¬¬äºŒä¸ª settarget å»¶è¿Ÿåˆ°æœ€åï¼Œæ­¤ä¸ºå¼‚å¸¸
+        // è§£å†³æ–¹æ¡ˆæ˜¯ç¼–è¾‘å™¨ä¸‹æå‰å®‰æ’äº‹ä»¶
+       callbackExp = animator.SetTarget("Expand");
+        callbackClps = animator.SetTarget("Collapse");
     }
 
     private async void OnButtonClicked()
     {
-        // ÔËĞĞÊ±Îª¶¯»­Æ¬¶Î°ó¶¨ÊÂ¼ş, ÌáÇ°°ó¶¨ÒÔ±ÜÃâAnimatorÔËĞĞ¹ı³ÌÖĞ±»ÖØĞÂ°ó¶¨
-        // ·¢ÏÖ ReBind »áµ¼ÖÂµÚ¶ş¸ö settarget ÑÓ³Ùµ½×îºó£¬´ËÎªÒì³£
-        // ½â¾ö·½°¸ÊÇ±à¼­Æ÷ÏÂÌáÇ°°²²åÊÂ¼ş
-        var callbackExp = animator.SetTarget("Expand");
-        var callbackClps = animator.SetTarget("Collapse");
-            
         button.interactable = false;
-        
-        Debug.Log($"{nameof(Test)}:  Default is  collapse, Now start expand£¡");
+        Debug.Log($"{nameof(Test)}:  Default is  expand , Now start collapseï¼");
 
-        await callbackExp.SetBoolAsync("Expand",true);
-        Debug.Log($"{nameof(Test)}:  expand Completed £¡");
+        await callbackClps.SetBoolAsync("Expand",false);
         
-        Debug.Log($"{nameof(Test)}:  waiting 2 second£¡");
-        await Task.Delay(2000);
-        Debug.Log($"{nameof(Test)}:  waiting finish£¡");
+        Debug.Log($"{nameof(Test)}:  collapse Completed ï¼");
+        text.text = "collapsed";
+        
+        Debug.Log($"{nameof(Test)}:  wait for 5 secondï¼");
+        await Task.Delay(5000);
+        Debug.Log($"{nameof(Test)}:  waiting finishï¼");
 
-        Debug.Log($"{nameof(Test)}:  Now is expand  , now start collapse£¡");
-        await callbackClps.SetBoolAsync("Expand", false); 
-        Debug.Log($"{nameof(Test)}: collapse Completed!");
+        Debug.Log($"{nameof(Test)}:  Now is collapse , expanding ï¼");
+        await callbackExp.SetBoolAsync("Expand", true); 
+        text.text = "expand";
+        Debug.Log($"{nameof(Test)}: expand Completed!");
         button.interactable = true;
     }
 }

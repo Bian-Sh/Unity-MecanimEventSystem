@@ -17,12 +17,10 @@ namespace zFrame.Event
         Animator animator;
         public List<StateInfo> clipsInfo = new List<StateInfo>();
 
-        void Start()
+        void OnValidate()
         {
             animator = GetComponent<Animator>();
-
             GetClipInfo(animator);
-
         }
 
         private void GetClipInfo(Animator animator)
@@ -34,6 +32,7 @@ namespace zFrame.Event
             }
             else
             {
+                clipsInfo.Clear();
                 for (int i = 0; i < controller.layers.Length; i++)
                 {
                     ChildAnimatorState[] states = controller.layers[i].stateMachine.states;

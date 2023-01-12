@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using static zFrame.Event.EventHandler;
 
 namespace zFrame.Event
@@ -13,7 +14,7 @@ namespace zFrame.Event
         /// <returns>事件配置器</returns>
         public static EventState SetTarget(this Animator animator, string clipName)
         {
-            EventInfo a_EventInfo = GenerAnimationInfo(animator, clipName);
+            EventInfo a_EventInfo = GetAnimationInfo(animator, clipName);
             animator.EnsureComponent<CallbackListener>();
             //获得需要处理的动画片段
             return new EventState(a_EventInfo);
@@ -27,7 +28,7 @@ namespace zFrame.Event
         /// <returns>事件配置器</returns>
         public static EventState GetEventConfig(this Animator animator, string clipName)
         {
-            EventInfo a_EventInfo = GenerAnimationInfo(animator, clipName);
+            EventInfo a_EventInfo = GetAnimationInfo(animator, clipName);
             animator.EnsureComponent<CallbackListener>();
             //获得需要处理的动画片段
             return new EventState(a_EventInfo);
@@ -41,13 +42,29 @@ namespace zFrame.Event
         /// <returns>事件配置器</returns>
         public static EventState SetTarget(this Animator animator, string clipName, int frame)
         {
-            EventInfo a_EventInfo = GenerAnimationInfo(animator, clipName);
+            EventInfo a_EventInfo = GetAnimationInfo(animator, clipName);
             animator.EnsureComponent<CallbackListener>();
             //获得需要处理的动画片段
             return new EventState(a_EventInfo, frame);
         }
 
-
+        public static void RemoveListener(this Animator animator, Action<AnimationEvent> action, string clipName, int frame = -1)
+        {
+            EventInfo a_EventInfo = GetAnimationInfo(animator, clipName, false);
+            if (null != a_EventInfo)
+            {
+                a_EventInfo.RemoveListener(frame, action);
+            }
+        }
+        public static bool HasAnyListener(this Animator animator, string clipName, int frame = -1)
+        {
+            EventInfo a_EventInfo = GetAnimationInfo(animator, clipName, false);
+            if (null != a_EventInfo)
+            {
+                return a_EventInfo.HasAnyListener(frame);
+            }
+            return false;
+        }
         private static T EnsureComponent<T>(this Component target) where T : Component
         {
             T component = target.GetComponent<T>();

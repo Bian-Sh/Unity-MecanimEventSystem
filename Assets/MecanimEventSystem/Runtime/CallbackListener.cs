@@ -1,4 +1,7 @@
-﻿using System.Numerics;
+﻿using Codice.CM.SEIDInfo;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
 using UnityEditor;
 using UnityEngine;
 using static zFrame.Event.EventHandler;
@@ -19,9 +22,18 @@ namespace zFrame.Event
             AnimationClip clip = ae.animatorClipInfo.clip;//动画片段名称
             int currentFrame = Mathf.FloorToInt(ae.animatorClipInfo.clip.frameRate * ae.time);  //动画片段当前帧 向下取整
             var actions = GetAction(animator, clip, currentFrame);
-            foreach (var item in actions)
+            var temp = new List<Action<AnimationEvent>>(actions);
+            for (int i = 0; i < temp.Count; i++)
             {
-                item?.Invoke(ae);
+                var action = temp[i];
+                if (action != null)
+                {
+                    action.Invoke(ae);
+                    if (action.Method.DeclaringType.Name == nameof(AnimationAwaiter)) // the callback  which comes from AnimationAwaiter should be oneshot event.
+                    {
+                        actions.Remove(action);
+                    }
+                }
             }
         }
     }

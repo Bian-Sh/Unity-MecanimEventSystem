@@ -60,7 +60,10 @@ namespace zFrame.Event
             }
             else
             {
-                Debug.LogWarning($"AnimatorEventSystem[一般]：指定AnimationClip【{a_Event.animationClip.name}】已经订阅了该事件【{action.Method.Name}】！\n 建议：请勿频繁订阅！");
+                if (LogLevels.HasFlag(LogLevel.Warning))
+                {
+                    Debug.LogWarning($"AnimatorEventSystem[一般]：指定AnimationClip【{a_Event.animationClip.name}】已经订阅了该事件【{action.Method.Name}】！\n 建议：请勿频繁订阅！");
+                }
             }
         }
 

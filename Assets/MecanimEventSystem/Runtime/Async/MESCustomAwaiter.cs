@@ -8,7 +8,7 @@ public static class MESCustomAwaiter
     public static AnimationAwaiter SetBoolAsync(this EventState state, string paramName, bool value)
     {
         var awaiter = new AnimationAwaiter();
-        state.OnCompleted(v => awaiter.Complete());
+        state.OnCompleted(awaiter.SetResult);
         state.SetBool(paramName, value);
         return awaiter;
     }
@@ -34,10 +34,12 @@ public class AnimationAwaiter : INotifyCompletion
     }
 
     public AnimationAwaiter GetAwaiter() => this;
-    public object GetResult() => null;
-    public void Complete()
+    public AnimationEvent GetResult() => animationEvent;
+    AnimationEvent animationEvent;
+    public void SetResult(AnimationEvent ae)
     {
         _isDone = true;
+        animationEvent = ae;
         if (Thread.CurrentThread.ManagedThreadId == id)
         {
             _continuation?.Invoke();

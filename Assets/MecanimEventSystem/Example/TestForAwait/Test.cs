@@ -45,8 +45,8 @@ public class Test : MonoBehaviour
         {
             button.interactable = false;
             Debug.Log($"{nameof(Test)}:  Default is  expand , Now start collapse！");
-            await callbackClps.SetBoolAsync("Expand", false);
-            Debug.Log($"{nameof(Test)}:  collapse Completed ！");
+            var r = await callbackClps.SetBoolAsync("Expand", false);
+            Debug.Log($"{nameof(Test)}:  collapse Completed , clip name = {r.animatorClipInfo.clip.name}！");
             text.text = "collapsed";
         }
 

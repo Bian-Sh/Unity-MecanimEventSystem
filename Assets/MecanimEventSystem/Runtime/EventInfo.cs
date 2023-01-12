@@ -25,6 +25,30 @@ namespace zFrame.Event
             //经验表明需要 向下取整 以获取当前的帧数
             totalFrames = Mathf.FloorToInt(animationClip.frameRate * animationClip.length);
         }
+        public void RemoveListener(int frame, Action<AnimationEvent> action)
+        {
+            if (frame == -1)
+            {
+                frame = totalFrames;
+            }
+            if (frameCallBackPairs.ContainsKey(frame))
+            {
+                frameCallBackPairs[frame].Remove(action);
+            }
+        }
+
+        public bool HasAnyListener(int frame)
+        {
+            if (frame == -1)
+            {
+                frame = totalFrames;
+            }
+            if (frameCallBackPairs.TryGetValue(frame, out var list))
+            {
+                return list.Count > 0;
+            }
+            return false;
+        }
 
         /// <summary>清除数据</summary>
         public void Clear()

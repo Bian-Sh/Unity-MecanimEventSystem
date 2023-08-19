@@ -1,16 +1,11 @@
-﻿using Codice.CM.SEIDInfo;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
-using UnityEditor;
 using UnityEngine;
 using static zFrame.Event.EventHandler;
 
 namespace zFrame.Event
 {
-    //代码分析，编辑器下就把事件绑定好
-    //Please use Editor.AnimationUtility to add persistent animation events to an animation clip
-    //UnityEngine.AnimationClip:AddEvent(UnityEngine.AnimationEvent)
+    [RequireComponent(typeof(Animator))]
     public class CallbackListener : MonoBehaviour
     {
         Animator animator;
@@ -29,7 +24,8 @@ namespace zFrame.Event
                 if (action != null)
                 {
                     action.Invoke(ae);
-                    if (action.Method.DeclaringType.Name == nameof(AnimationAwaiter)) // the callback  which comes from AnimationAwaiter should be oneshot event.
+                    // the callback  which comes from AnimationAwaiter should be oneshot event.
+                    if (action.Method.DeclaringType.Name == nameof(AnimationAwaiter))
                     {
                         actions.Remove(action);
                     }

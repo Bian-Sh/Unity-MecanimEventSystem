@@ -74,11 +74,6 @@ namespace zFrame.Event
                 messageOptions = SendMessageOptions.DontRequireReceiver, //回调未找到不提示
             };
             eventInfo.animationClip.AddEvent(varEvent); //绑定事件
-            eventInfo.animator.Rebind(); //重新绑定动画器的所有动画的属性和网格数据。
-            if (LogLevels.HasFlag(LogLevel.Info))
-            {
-                Debug.Log($"{nameof(EventHandler)}:完成 AnimationEvent 添加, 建议优先在编辑器下就把事件安插OK以避免动画机的重新绑定，see more ↓ \nClip Name = {eventInfo.animationClip.name} , frame = {frame} , time = {_time} ,Function  Name = {func}");
-            }
         }
 
         /// <summary>数据重置，用于总管理类清理数据用</summary>

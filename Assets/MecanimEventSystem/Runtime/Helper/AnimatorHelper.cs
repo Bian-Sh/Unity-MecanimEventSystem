@@ -1,6 +1,4 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor.Animations;
 #endif

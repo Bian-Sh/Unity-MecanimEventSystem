@@ -35,8 +35,6 @@ public class Test : MonoBehaviour
     {
         // 为 2 个动画片的绑定事件
         {
-            // SetTarget 务必提前统一操作
-            // 原因是该操作会触发 Animator Rebind 并导致动画重置。
             callbackExp = animator.SetTarget("Expand");
             callbackClps = animator.SetTarget("Collapse");
         }
@@ -52,7 +50,7 @@ public class Test : MonoBehaviour
 
         //做一个延迟
         {
-            Debug.Log($"{nameof(Test)}:  wait for 5 second！");
+            Debug.Log($"{nameof(Test)}:  wait for {delay} second！");
             isCounting = true;
             await Task.Delay(delay * 1000);
             isCounting = false;

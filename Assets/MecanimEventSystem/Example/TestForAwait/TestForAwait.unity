@@ -205,6 +205,7 @@ GameObject:
   - component: {fileID: 230172597}
   - component: {fileID: 230172602}
   - component: {fileID: 230172603}
+  - component: {fileID: 230172604}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -326,7 +327,7 @@ MonoBehaviour:
   button: {fileID: 579102279}
   text: {fileID: 455942728}
   text2: {fileID: 629659807}
-  delay: 5
+  delay: 2
 --- !u!114 &230172603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,6 +340,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1703af9c2d635a44a85cfc43771212ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &230172604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 230172596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25acab8b97525a4ca09e846def1988b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clipsInfo:
+  - stateName: Base Layer.Expand
+    clip: {fileID: 7400000, guid: 3fdbbca4c7ccefe46be8c057a9cf3aaf, type: 2}
+    layerIndex: 0
+    funcs: []
+  - stateName: Base Layer.Collapse
+    clip: {fileID: 7400000, guid: 3f7ef41dfd7941047bf83a39d1f519eb, type: 2}
+    layerIndex: 0
+    funcs: []
+  - stateName: Base Layer.idel
+    clip: {fileID: 7400000, guid: 1735b84d3c1fd2b4e85f03391432434f, type: 2}
+    layerIndex: 0
+    funcs: []
 --- !u!1 &395516723
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,6 +24,7 @@ class NewBEditor : Editor
 [CustomPropertyDrawer(typeof(AnimatorParams))]
 public class AnimatorParamsDrawer : PropertyDrawer
 {
+    AnimatorParams @params;
     // Draw the property inside the given rect
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
@@ -44,31 +45,38 @@ public class AnimatorParamsDrawer : PropertyDrawer
         var nameRect = new Rect(position.x + 90, position.y, position.width - 90, position.height);
 
         // Draw fields - pass GUIContent.none to each so they are drawn without labels
-        EditorGUI.PropertyField(amountRect, property.FindPropertyRelative(nameof(AnimatorParams.state)), GUIContent.none);
-        EditorGUI.PropertyField(unitRect, property.FindPropertyRelative(nameof(AnimatorParams.param)), GUIContent.none);
-        // 根据 AnimatorParams.type 绘制 AnimatorParams.value
-        var type = (AnimatorControllerParameterType)property.FindPropertyRelative(nameof(AnimatorParams.type)).enumValueIndex;
-        switch (type)
+        var stateSP = property.FindPropertyRelative(nameof(AnimatorParams.state));
+        var paramSP = property.FindPropertyRelative(nameof(AnimatorParams.param));
+        var valueSP = property.FindPropertyRelative(nameof(AnimatorParams.value));
+        EditorGUI.PropertyField(amountRect, stateSP, GUIContent.none);
+        EditorGUI.PropertyField(unitRect, paramSP, GUIContent.none);
+        //todo: 根据 params name （AnimatorParams.param）去 Animator 查找是否存在且属于 什么参数类型（AnimatorControllerParameterType）
+        // 一下是demo
+        var paramsType = AnimatorControllerParameterType.Bool;
+        if (paramSP.stringValue == "boolvalue")
+        {
+            paramsType = AnimatorControllerParameterType.Bool;
+        }
+        else if (paramSP.stringValue == "intvalue")
+        {
+            paramsType = AnimatorControllerParameterType.Int;
+        }
+
+        switch (paramsType)
         {
             case AnimatorControllerParameterType.Bool:
-                // 将 object 类型的AnimatorParams.value  绘制成复选框
-                
+                @params.value = false;
+                //valueSP.boolValue = false;
                 break;
             case AnimatorControllerParameterType.Int:
-                var sp = property.FindPropertyRelative(nameof(AnimatorParams.value));
-                var value = property.intValue;
-                // draw int field
-                EditorGUI.PropertyField(nameRect, sp, GUIContent.none);
-                break;
-            case AnimatorControllerParameterType.Float:
-                EditorGUI.PropertyField(nameRect, property.FindPropertyRelative(nameof(AnimatorParams.value)), GUIContent.none);
-                break;
-            case AnimatorControllerParameterType.Trigger:
-                EditorGUI.PropertyField(nameRect, property.FindPropertyRelative(nameof(AnimatorParams.value)), GUIContent.none);
+                valueSP.intValue = 111;
                 break;
             default:
+                Debug.Log($"{nameof(AnimatorParamsDrawer)}: todo ....");
                 break;
         }
+        EditorGUI.PropertyField(nameRect, valueSP, GUIContent.none);
+
         // Set indent back to what it was
         EditorGUI.indentLevel = indent;
 
@@ -100,20 +108,17 @@ public class AnimatorParams
 {
     public string state; //Base Layer.Expand
     public string param; //
-    public AnimatorControllerParameterType type; // float ,trigger,bool ,int
     public object value; // 1.0f ,true ,false ,1
-    public AnimatorParams(string state, string param, AnimatorControllerParameterType type, object value)
+    public AnimatorParams(string state, string param, object value)
     {
         this.state = state;
         this.param = param;
-        this.type = type;
         this.value = value;
     }
     public override string ToString()
     {
         var info = @$"state = {state}
 param = {param}
-type = {type}
 vale = {value}";
         return info;
     }

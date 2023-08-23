@@ -2,17 +2,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
-using zFrame.Event;
-public static class MESCustomAwaiter
-{
-    public static AnimationAwaiter SetBoolAsync(this EventState state, string paramName, bool value)
-    {
-        var awaiter = new AnimationAwaiter();
-        state.OnCompleted(awaiter.SetResult);
-        state.SetBool(paramName, value);
-        return awaiter;
-    }
-}
 
 public class AnimationAwaiter : INotifyCompletion
 {

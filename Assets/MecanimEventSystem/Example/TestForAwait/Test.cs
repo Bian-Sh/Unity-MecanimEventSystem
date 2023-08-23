@@ -33,17 +33,11 @@ public class Test : MonoBehaviour
 
     private async void OnButtonClicked()
     {
-        // 为 2 个动画片的绑定事件
-        {
-            callbackExp = animator.SetTarget("Expand");
-            callbackClps = animator.SetTarget("Collapse");
-        }
-
         // 等待折叠
         {
             button.interactable = false;
             Debug.Log($"{nameof(Test)}:  Default is  expand , Now start collapse！");
-            var r = await callbackClps.SetBoolAsync("Expand", false);
+            var r = await animator.SetBoolAsync("Expand","Expand", false); // todo: 必须细分到 layer.state 这种级别，否则误触会很伤 
             Debug.Log($"{nameof(Test)}:  collapse Completed , clip name = {r.animatorClipInfo.clip.name}！");
             text.text = "collapsed";
         }
@@ -62,7 +56,7 @@ public class Test : MonoBehaviour
         // 等待展开
         {
             Debug.Log($"{nameof(Test)}:  Now is collapse , expanding ！");
-            await callbackExp.SetBoolAsync("Expand", true);
+            await animator.SetBoolAsync("Expand", "Expand", true);
             text.text = "expand";
             Debug.Log($"{nameof(Test)}: expand Completed!");
             button.interactable = true;

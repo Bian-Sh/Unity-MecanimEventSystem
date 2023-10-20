@@ -6,15 +6,13 @@
 
 # 简述
 
-这是一个非常实用的，链式编程风格的 Animator 事件系统。
+* 这是一个非常实用的，链式编程风格的 Animator 事件系统。
+* 通过 方法扩展 的方式实现了对 Animator 的功能扩展
+* 现在你能直接使用 Animator.SetTarget(clipname,frame) 指定在哪一个动画片段的哪一帧上插入事件。
+* 解决了必须手动插入AnimationEvent的痛点，同时链式+ Lambda 使得逻辑更集中更优雅，也方便阅读和理解。
+* 支持 await/async 语法糖调用, 请参考：[AnimatorAwaitEx](https://github.com/Bian-Sh/Unity-MecanimEventSystem/blob/754b80c6142349556ec666ca99583b0922c947de/Assets/MecanimEventSystem/Runtime/Async/AnimatorAwaitEx.cs)
 
-通过 方法扩展 的方式实现了对 Animator 的功能扩展
 
-现在你能直接使用 Animator.SetTarget(clipname,frame) 指定在哪一个动画片段的哪一帧上插入事件。
-
-解决了必须手动插入AnimationEvent的痛点，同时链式+ Lambda 使得逻辑更集中更优雅，也方便阅读和理解。
-
-支持 await/async 语法糖调用,本人仅实现了 [SetBoolAsync](https://github.com/Bian-Sh/Unity-MecanimEventSystem/blob/23785e246062cf70f1f4c3e13bba83344baf0024/Assets/MecanimEventSystem/Runtime/Async/MESCustomAwaiter.cs#L8) ，其他请按需实现即可
 
 插入的事件分2个：
 
@@ -62,14 +60,14 @@
 > * 使用 async / await 
 
 ```
-    // 这里做一些事情，比如本例中按钮的可交互性改为：false
-            button.interactable = false;
-            var r = await callbackClps.SetBoolAsync("Expand", false);
-            text.text = "collapsed";
-    // 这里做一些收尾，比如为 text 赋值 或者 将按钮变为可交互
+// 这里做一些事情，比如本例中按钮的可交互性改为：false
+button.interactable = false;
+var r = await animator.SetBoolAsync("Expand","Expand", false); // todo: 必须细分到 layer.state 这种级别，否则误触会很伤 
+text.text = "collapsed";
+// 这里做一些收尾，比如为 text 赋值 或者 将按钮变为可交互
 ```
 
-[示例代码](https://github.com/Bian-Sh/Unity-MecanimEventSystem/blob/23785e246062cf70f1f4c3e13bba83344baf0024/Assets/MecanimEventSystem/Example/TestForAwait/Test.cs#L46)
+[示例代码](https://github.com/Bian-Sh/Unity-MecanimEventSystem/blob/754b80c6142349556ec666ca99583b0922c947de/Assets/MecanimEventSystem/Example/TestForAwait/Test.cs#L40)
 
 # 动画演示
 
@@ -84,7 +82,7 @@
 # todo
 
 1. 将参数内敛到一个类型中并绘制到面板在面板上
-2. 将对 EventState 的扩展改为对 Animator 的扩展
+2. ~~将对 EventState 的扩展改为对 Animator 的扩展~~
 3. 整理为 UPM 插件包形式
 
 # 我的简书
@@ -99,11 +97,11 @@
 
 ### Overview
 
-This is a highly practical, chain-programming style Animator event system that extends the functionality of the Animator through method extensions.
+* This is a highly practical, chain-programming style Animator event system that extends the functionality of the Animator through method extensions.
 
-With this system, you can now directly use `Animator.SetTarget(clipname,frame)` to specify which frame of an animation clip to insert an event. This solves the pain point of having to manually insert `AnimationEvents`, while the chain + Lambda approach makes the logic more concentrated, elegant, and easy to read and understand.
+* With this system, you can now directly use `Animator.SetTarget(clipname,frame)` to specify which frame of an animation clip to insert an event. This solves the pain point of having to manually insert `AnimationEvents`, while the chain + Lambda approach makes the logic more concentrated, elegant, and easy to read and understand.
 
-The system supports `await/async` syntactic sugar calls. The author has only implemented `SetBoolAsync`, but others can be implemented as needed.
+* The system supports `await/async` syntactic sugar calls. you can implemented fit your needs see ref [AnimatorAwaitEx](https://github.com/Bian-Sh/Unity-MecanimEventSystem/blob/754b80c6142349556ec666ca99583b0922c947de/Assets/MecanimEventSystem/Runtime/Async/AnimatorAwaitEx.cs).
 
 The inserted events are divided into two types:
 
@@ -153,12 +151,12 @@ animator.SetTarget("Rotate")
 ```csharp
 // Do something here, such as changing the interactivity of the button in this example to: false
 button.interactable = false;
-var r = await callbackClps.SetBoolAsync("Expand", false);
+var r = await animator.SetBoolAsync("Expand","Expand", false); //todo :Maybe the syntax "layer.StateName" is good.
 text.text = "collapsed";
 // Do some finishing touches here, such as assigning values to text or making buttons interactive
 ```
 
-[Example code](https://github.com/Bian-Sh/Unity-MecanimEventSystem/blob/23785e246062cf70f1f4c3e13bba83344baf0024/Assets/MecanimEventSystem/Example/TestForAwait/Test.cs#L46)
+[Example code](https://github.com/Bian-Sh/Unity-MecanimEventSystem/blob/754b80c6142349556ec666ca99583b0922c947de/Assets/MecanimEventSystem/Example/TestForAwait/Test.cs#L40)
 
 # Animations
 
@@ -173,7 +171,7 @@ Demonstrates the elegant control of process control through await
 # To-Do List
 
 1. Inline parameters into a type and draw them on the inspector.
-2. Change the extension of ``EventState`` to an extension of ``Animator``.
+2. ~~Change the extension of ``EventState`` to an extension of ``Animator``.~~
 3. Organize into UPM package form.
 
 # Reference
